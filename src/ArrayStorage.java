@@ -19,39 +19,35 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Resume result = null;
-        for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equals(uuid)) {
-                result = storage[i];
-            }
-        }
-        return result;
+        return getIndex(uuid) > -1 ? storage[getIndex(uuid)] : null;
     }
 
     void delete(String uuid) {
-        int deletedIndex = -1;
+        if (getIndex(uuid) < 0) {
+            return;
+        }
+        storage[getIndex(uuid)] = storage[size - 1];
+        storage[size - 1] = null;
+        size--;
+    }
+
+    private int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if ((storage[i].uuid != null || uuid != null)
                     && storage[i].uuid.equals(uuid)) {
-                storage[i] = null;
-                deletedIndex = i;
-                break;
+                return i;
             }
         }
-        if (deletedIndex >= 0 && size + 1 - deletedIndex >= 0) {
-            System.arraycopy(storage, deletedIndex + 1, storage, deletedIndex, size + 1 - deletedIndex);
-            size--;
-        }
-
+        return -1;
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] array = new Resume[size];
-        System.arraycopy(storage, 0, array, 0, array.length);
-        return array;
+        Resume[] allResume = new Resume[size];
+        System.arraycopy(storage, 0, allResume, 0, allResume.length);
+        return allResume;
     }
 
     int size() {
